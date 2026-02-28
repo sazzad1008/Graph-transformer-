@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -14,7 +16,7 @@ class ScratchHGTConv(nn.Module):
         super().__init__()
         self.out_dim, self.n_heads = out_dim, n_heads
         self.d_k = out_dim // n_heads
-        self.sqrt_d_k = self.d_k**0.5
+        self.inv_sqrt_d_k = 1.0 / math.sqrt(self.d_k)
 
         self.k_linears = nn.ModuleList([nn.Linear(in_dim, out_dim) for _ in range(num_types)])
         self.q_linears = nn.ModuleList([nn.Linear(in_dim, out_dim) for _ in range(num_types)])
@@ -53,7 +55,7 @@ class ScratchHGTConv(nn.Module):
 
         # k_rel: (edges, heads, d_k) relation-specific key transform
         k_rel = torch.einsum("ehd,ehdf->ehf", k[src], self.relation_att[edge_type])
-        att_score = (q[dst] * k_rel).sum(dim=-1) / self.sqrt_d_k
+        att_score = (q[dst] * k_rel).sum(dim=-1) * self.inv_sqrt_d_k
         att_weight = softmax(att_score, dst, num_nodes=num_nodes)
 
         # v_rel: (edges, heads, d_k) relation-specific value transform

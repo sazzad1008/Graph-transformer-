@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import math
+
 import torch
 import torch.nn.functional as F
 from einops import rearrange, repeat
@@ -37,7 +39,7 @@ class MultiHeadAttention(nn.Module):
         self.emb_size = emb_size
         self.num_heads = num_heads
         self.d_k = emb_size // num_heads
-        self.sqrt_d_k = self.d_k**0.5
+        self.inv_sqrt_d_k = 1.0 / math.sqrt(self.d_k)
         self.keys = nn.Linear(emb_size, emb_size)
         self.queries = nn.Linear(emb_size, emb_size)
         self.values = nn.Linear(emb_size, emb_size)
@@ -52,7 +54,7 @@ class MultiHeadAttention(nn.Module):
         if mask is not None:
             fill_value = torch.finfo(torch.float32).min
             energy = energy.masked_fill(~mask, fill_value)
-        att = F.softmax(energy / self.sqrt_d_k, dim=-1)
+        att = F.softmax(energy * self.inv_sqrt_d_k, dim=-1)
         att = self.att_drop(att)
         out = torch.einsum("b h a l, b h l v -> b h a v", att, values)
         out = rearrange(out, "b h n d -> b n (h d)")
