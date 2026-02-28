@@ -15,6 +15,7 @@ class ScratchHGTConv(nn.Module):
         self.out_dim, self.n_heads = out_dim, n_heads
         self.d_k = out_dim // n_heads
         self.sqrt_dk = self.d_k**0.5
+        self.scale = 1.0 / self.sqrt_dk
 
         self.k_linears = nn.ModuleList([nn.Linear(in_dim, out_dim) for _ in range(num_types)])
         self.q_linears = nn.ModuleList([nn.Linear(in_dim, out_dim) for _ in range(num_types)])
@@ -47,7 +48,7 @@ class ScratchHGTConv(nn.Module):
         k, q, v = [x.view(-1, self.n_heads, self.d_k) for x in (k_all, q_all, v_all)]
 
         k_rel = torch.einsum("ehd,ehdf->ehf", k[src], self.relation_att[edge_type])
-        att_score = (q[dst] * k_rel).sum(dim=-1) * (1.0 / self.sqrt_dk)
+        att_score = (q[dst] * k_rel).sum(dim=-1) * self.scale
         att_weight = softmax(att_score, dst, num_nodes=num_nodes)
 
         v_rel = torch.einsum("ehd,ehdf->ehf", v[src], self.relation_msg[edge_type])

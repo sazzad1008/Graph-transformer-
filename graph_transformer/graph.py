@@ -47,7 +47,8 @@ class Graph:
             self.edge_list[source_node["type"]][target_node["type"]][relation_type][
                 edge[0]
             ][edge[1]] = time
-        self.times.add(time)
+        if time is not None:
+            self.times.add(time)
 
     def update_node(self, node: Dict[str, Any]) -> None:
         nbl = self.node_backward[node["type"]]

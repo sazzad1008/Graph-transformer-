@@ -37,6 +37,7 @@ class MultiHeadAttention(nn.Module):
         self.emb_size = emb_size
         self.num_heads = num_heads
         self.d_k = emb_size // num_heads
+        self.scaling = self.d_k**0.5
         self.keys = nn.Linear(emb_size, emb_size)
         self.queries = nn.Linear(emb_size, emb_size)
         self.values = nn.Linear(emb_size, emb_size)
@@ -51,8 +52,7 @@ class MultiHeadAttention(nn.Module):
         if mask is not None:
             fill_value = torch.finfo(torch.float32).min
             energy = energy.masked_fill(~mask, fill_value)
-        scaling = self.d_k**0.5
-        att = F.softmax(energy / scaling, dim=-1)
+        att = F.softmax(energy / self.scaling, dim=-1)
         att = self.att_drop(att)
         out = torch.einsum("b h a l, b h l v -> b h a v", att, values)
         out = rearrange(out, "b h n d -> b n (h d)")
