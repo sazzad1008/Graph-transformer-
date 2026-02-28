@@ -32,6 +32,11 @@ class ScratchHGTConv(nn.Module):
     ) -> torch.Tensor:
         src, dst = edge_index
         num_nodes = node_feat.size(0)
+        if edge_type.numel():
+            min_type = int(edge_type.min())
+            max_type = int(edge_type.max())
+            if min_type < 0 or max_type >= self.relation_att.size(0):
+                raise ValueError("edge_type contains invalid relation ids.")
 
         k_all = torch.zeros(num_nodes, self.out_dim, device=node_feat.device)
         q_all = torch.zeros(num_nodes, self.out_dim, device=node_feat.device)
