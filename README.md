@@ -1,4 +1,4 @@
-# Graph-transformer-
+# Graph Transformer
 
 This repository contains reference implementations for heterogeneous graph transformers and vision transformers.
 The original experiments are preserved in notebooks, while the reusable components now live in Python modules.

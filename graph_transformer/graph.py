@@ -16,7 +16,7 @@ class Graph:
                 lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: int)))
             )
         )
-        self.times = {}
+        self.times = set()
 
     def add_node(self, node: Dict[str, Any]) -> int:
         nfl = self.node_forward[node["type"]]
@@ -47,7 +47,7 @@ class Graph:
             self.edge_list[source_node["type"]][target_node["type"]][relation_type][
                 edge[0]
             ][edge[1]] = time
-        self.times[time] = True
+        self.times.add(time)
 
     def update_node(self, node: Dict[str, Any]) -> None:
         nbl = self.node_backward[node["type"]]
