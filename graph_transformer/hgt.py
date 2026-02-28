@@ -46,10 +46,12 @@ class ScratchHGTConv(nn.Module):
 
         k, q, v = [x.view(-1, self.n_heads, self.d_k) for x in (k_all, q_all, v_all)]
 
+        # k_rel: (edges, heads, d_k) relation-specific key transform
         k_rel = torch.einsum("ehd,ehdf->ehf", k[src], self.relation_att[edge_type])
         att_score = (q[dst] * k_rel).sum(dim=-1) / self.sqrt_dk
         att_weight = softmax(att_score, dst, num_nodes=num_nodes)
 
+        # v_rel: (edges, heads, d_k) relation-specific value transform
         v_rel = torch.einsum("ehd,ehdf->ehf", v[src], self.relation_msg[edge_type])
         messages = (v_rel * att_weight.unsqueeze(-1)).reshape(-1, self.out_dim)
 
