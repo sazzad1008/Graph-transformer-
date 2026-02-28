@@ -9,10 +9,10 @@ description = "Graph and vision transformer reference implementations."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-  "torch",
-  "torch-geometric",
-  "torch-scatter",
-  "einops",
+  "torch>=2.0.0",
+  "torch-geometric>=2.3.0",
+  "torch-scatter>=2.1.0",
+  "einops>=0.6.0",
 ]
 
 [tool.setuptools]
