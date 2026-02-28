@@ -11,6 +11,7 @@ class Graph:
         self.node_backward = defaultdict(lambda: [])
 
         self.node_features = defaultdict(lambda: [])
+        # edge_list[target_type][source_type][relation_type][target_id][source_id] = time
         self.edge_list = defaultdict(
             lambda: defaultdict(
                 lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: int)))
