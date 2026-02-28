@@ -36,6 +36,8 @@ class Graph:
         relation_type: str | None = None,
         directed: bool = True,
     ) -> None:
+        if relation_type is None:
+            raise ValueError("relation_type must be provided")
         edge = [self.add_node(source_node), self.add_node(target_node)]
         self.edge_list[target_node["type"]][source_node["type"]][relation_type][edge[1]][
             edge[0]
