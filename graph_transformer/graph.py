@@ -8,7 +8,7 @@ class Graph:
     def __init__(self) -> None:
         super().__init__()
         self.node_forward = defaultdict(lambda: {})
-        self.node_bacward = defaultdict(lambda: [])
+        self.node_backward = defaultdict(lambda: [])
 
         self.node_features = defaultdict(lambda: [])
         self.edge_list = defaultdict(
@@ -21,7 +21,7 @@ class Graph:
     def add_node(self, node: Dict[str, Any]) -> int:
         nfl = self.node_forward[node["type"]]
         if node["id"] not in nfl:
-            self.node_bacward[node["type"]] += [node]
+            self.node_backward[node["type"]] += [node]
             ser = len(nfl)
             nfl[node["id"]] = ser
             return ser
@@ -50,7 +50,7 @@ class Graph:
         self.times[time] = True
 
     def update_node(self, node: Dict[str, Any]) -> None:
-        nbl = self.node_bacward[node["type"]]
+        nbl = self.node_backward[node["type"]]
         ser = self.add_node(node)
         for k in node:
             if k not in nbl[ser]:

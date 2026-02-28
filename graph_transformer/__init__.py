@@ -5,6 +5,7 @@ from .hgt import ScratchHGTConv, ScratchHGTModel
 from .vit import (
     ClassificationHead,
     Encoder,
+    FeedForward,
     MultiHeadAttention,
     PatchEmbedding,
     TransformerEncoderBlock,
@@ -17,6 +18,7 @@ __all__ = [
     "ScratchHGTModel",
     "PatchEmbedding",
     "MultiHeadAttention",
+    "FeedForward",
     "TransformerEncoderBlock",
     "Encoder",
     "ClassificationHead",

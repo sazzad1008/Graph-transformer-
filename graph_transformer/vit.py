@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import torch
 import torch.nn.functional as F
 from einops import rearrange, repeat
@@ -80,7 +82,7 @@ class TransformerEncoderBlock(nn.Module):
         drop_p: float = 0.0,
         forward_expansion: int = 4,
         forward_drop_p: float = 0.0,
-        **kwargs: dict,
+        **kwargs: Any,
     ) -> None:
         super().__init__()
         self.norm1 = nn.LayerNorm(emb_size)
@@ -108,7 +110,7 @@ class TransformerEncoderBlock(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, depth: int = 12, **kwargs: dict) -> None:
+    def __init__(self, depth: int = 12, **kwargs: Any) -> None:
         super().__init__()
         self.blocks = nn.ModuleList([TransformerEncoderBlock(**kwargs) for _ in range(depth)])
 
@@ -141,7 +143,7 @@ class ViT(nn.Module):
         img_size: int = 224,
         depth: int = 12,
         n_classes: int = 6,
-        **kwargs: dict,
+        **kwargs: Any,
     ) -> None:
         super().__init__()
         self.patch_embedding = PatchEmbedding(in_channels, patch_size, emb_size, img_size)
